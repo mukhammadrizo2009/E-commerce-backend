@@ -1,8 +1,8 @@
 from sqlalchemy import (create_engine, URL)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 import config
+
 
 Database_URL = URL.create(
     drivername="postgresql+psycopg2",
@@ -15,10 +15,10 @@ Database_URL = URL.create(
 
 engine = create_engine(Database_URL)
 Base = declarative_base()
-Session = sessionmaker(autocommit=False , autoflush=True , bind=engine)
+SessionLocal = sessionmaker(autocommit=False , autoflush=True , bind=engine)
 
 def get_db():
-    db = Session()
+    db = SessionLocal()
     try:
         yield db
     finally:
