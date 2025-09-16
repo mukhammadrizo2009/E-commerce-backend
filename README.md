@@ -56,14 +56,4 @@ Admin panel quyidagi bo‘limlardan iborat:
 - **Backend:** FastAPI  
 - **Database:** SQLAlchemy + PostgreSQL (yoki SQLite)  
 - **Server:** Uvicorn  
-- **Frontend:** HTML/CSS/JS yoki React/Vue (agar mavjud bo‘lsa)  
-
----
-
-## 🚀 Loyihani ishga tushirish
-
-1. Repository’ni klonlash:
-
-```bash
-git clone <repository_url>
-cd E-commerce-backend
+- **Frontend:** HTML/CSS/JS yoki React/Vue (agar mavjud bo‘lsa) 
