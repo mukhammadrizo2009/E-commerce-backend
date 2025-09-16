@@ -40,7 +40,7 @@ class Book(Base):
     book_title = Column(String(length=64), nullable=False)
     author = Column(String(length=64), nullable=False)
     price = Column(Numeric(10, 2), nullable=False)
-    quantity = Column(Integer , nullable=False)
+    quantity = Column(Integer, CheckConstraint("quantity >= 0"), nullable=False)
     pages = Column(Integer, CheckConstraint("pages >= 1"), nullable=False)
     genre = Column(Enum(Genre), nullable=False)
     description = Column(Text)

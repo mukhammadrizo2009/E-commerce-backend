@@ -125,4 +125,79 @@ def edit_book(
             "updated_at": book.updated_at,
         }
     }
+
+class StockOperation(str, Enum):
+    increase = "increase"
+    decrease = "decrease"
     
+@app.put("/books/{book_id}/quantity")
+def update_stock(
+    book_id: int,
+    operation: StockOperation,
+    amount: int,
+    db: Session = Depends(get_db)
+    ):
+    
+    book = db.query(Book).filter(Book.book_id == book_id).first()
+    if not book:
+        raise HTTPException(
+            status_code=404,
+            detail="Book not found!"
+        )
+    if amount <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Amount must be greater than 0"
+        )
+        
+    if operation == StockOperation.increase:
+        book.quantity += amount
+    
+    elif operation == StockOperation.decrease:
+        if book.quantity - amount < 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Quantity cannot be negative"
+                )
+        book.quantity -= amount
+        
+    db.commit()
+    db.refresh(book)
+    
+    return {
+        "message": f"Quantity updated successfully",
+        "book": {
+            "id": book.book_id,
+            "title": book.book_title,
+            "author": book.author,
+            "price": float(book.price),
+            "quantity": book.quantity,
+            "pages": book.pages,
+            "genre": book.genre.value,
+            "description": book.description,
+            "created_at": book.created_at,
+            "updated_at": book.updated_at,
+        }
+    }
+    
+@app.get("/api/books/out-of-stock")
+def get_out_of_stock_books(db: Session = Depends(get_db)):
+    books = db.query(Book).filter(Book.quantity == 0).all()
+    
+    if not books:
+        return {"message": "Hozircha tugagan kitoblar yo'q"}
+    
+    return [
+        {
+            "id": book.book_id,
+            "title": book.book_title,
+            "author": book.author,
+            "price": float(book.price),
+            "quantity": book.quantity,
+            "genre": book.genre.value,
+            "description": book.description,
+            "created_at": book.created_at,
+            "updated_at": book.updated_at
+        }
+        for book in books
+    ]
